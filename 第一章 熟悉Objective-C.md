@@ -93,12 +93,48 @@
 
     ```objectivec
     enum EOCConnectionState {
-        
+        EOCConnectionStateDisconnected,
+        EOCConnectionStateConnecting,
+        EOCConnectionStateConnected,
+    };
+    
+    typedef enum EOCConnectionState EOCConnectionState;
+    EOCConnectionState state = EOCConnectionStateDisconnected;
+    ```
+  
+  - 指定使用何种底层数据类型
+  
+    ```objective-c
+    enum EOCConnectionStateConnectionState : NSInteger;
+    ```
+  
+  - 枚举机制：有初值则为初值，没有初值按顺序 +1 递增
+  
+  - 用枚举定义选项，通过位运算选择选项
+  
+    ```objective-c
+    enum UIViewAutoresizing {
+    	UIViewAutoreasizingNone = 0,
+    	UIViewAutoreasizingFlexibleLeftMargin   = 1 << 0,
+    	UIViewAutoreasizingFlexibleWidth        = 1 << 1,
+    	UIViewAutoreasizingFlexibleRightMargin  = 1 << 2,
+    	UIViewAutoreasizingFlexibleTopMargin    = 1 << 3,
+    	UIViewAutoreasizingFlexibleHeight       = 1 << 4,
+    	UIViewAutoreasizingFlexibleBottomMargin = 1 << 5,
+    };
+    
+    enum UIViewAutoresizing resizing = UIViewAutoreasizingFlexibleWidth | UIViewAutoreasizingFlexibleHeight;
+    if (resizing & UIViewAutoreasizingFlexibleWidth) {
+        //UIViewAutoreasizingFlexibleWidth is set.
     }
     ```
-
-  - ```objectivec
-    //  单选
+  
+    
+  
+  - Foundation框架中定义了若干辅助宏，具备向后兼容能力，适配新旧平台的编译器标准。`NS_ENUM`用于单选，`NS_OPTIONS`用于多选。
+  
+    ```objectivec
+    //单选
     typedef NS_ENUM(NSInteger, UIViewAnimationTransition) {
         UIViewAnimationTransitionNone,
         UIViewAnimationTransitionFlipFromLeft,
@@ -106,8 +142,17 @@
         UIViewAnimationTransitionCurlUp,
         UIViewAnimationTransitionCurlDown,
     };
+    //等价于
+    typedef enum UIViewAnimationTransition : NSUInteger UIViewAnimationTransition;
+    enum UIViewAnimationTransition : NSUInteger {
+        UIViewAnimationTransitionNone,
+        UIViewAnimationTransitionFlipFromLeft,
+        UIViewAnimationTransitionFlipFromRight,
+        UIViewAnimationTransitionCurlUp,
+        UIViewAnimationTransitionCurlDown,
+    };
     
-    //  多选
+    //多选
     typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) {
         UIViewAutoresizingNone                 = 0,
         UIViewAutoresizingFlexibleLeftMargin   = 1 << 0,
@@ -118,3 +163,28 @@
         UIViewAutoresizingFlexibleBottomMargin = 1 << 5
     };
     ```
+  
+  - 对于switch语句处理枚举时，确保处理了所有的枚举值。同时不要添加defult语句，这与使用switch枚举的本意不符，而且这样做之后当有新的枚举值添加时，编译器会产生警告信息。
+  
+    ```objective-c
+    typedef NS_ENUM (NSUInteger, EOCConnectionState) {
+        EOCConnectionStateDisConnected,
+        EOCConnectionStateConnecting,
+        EOCConnectionStateConnected,
+    };
+    
+    switch (_currentState) {
+        EOCConnectionStateDisConnected:
+            //Handle disconnected state
+            break;
+        EOCConnectionStateConnecting:
+            //Handle connecting state
+            break;
+        EOCConnectionStateConnected:
+            //Handle connected state
+            break;
+    }
+    ```
+  
+    
+
