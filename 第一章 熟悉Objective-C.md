@@ -1,16 +1,36 @@
 # 1. 了解OC的起源
 
 - OC是在C语言基础上添加了面向对象特性的语言，是其超集
+
 - 消息结构型语言（OC）和函数调用型语言（C++、Java）的关键区别：前者运行时所应该执行的代码由运行环境决定；后者由编译器决定
+
+  ```objective-c
+  //Messaging（Objevtive-C）
+  Object *obj = [Object new];
+  [obj performWith:parameter1 and:parameter2];
+  
+  //Function calling（C++）
+  Object *obj = new Object;
+  obj->perform(parameter1, parameter2);
+  ```
+
 - OC重要工作都由“运行期组件”（包含使用OC的面向对象特性所需的全部数据结构和函数）完成而非编译器。举例来说，运行期组件中包含全部的内存管理，本质上是一种与开发者所编代码相连接的“动态库”，其代码能把开发者所编写的所有程序粘合起来。这样一来，只需要更新运行期组件就可以提升程序性能；而那些许多工作都在编译期完成的语言，若想获得类似的提升，则需要重新编译程序
+
 - 所有的OC对象(可以粗略的理解为带 * 的变量)所占的内存总是分配在“堆”上，而绝不会分配在“栈”上；而不带 * 的变量可能会使用栈空间，这些变量保存的不是OC对象，比如CGRect。结构体开销比对象小（对象还要考虑内存的分配和释放），如果只需保存int、float等“非对象对类型”，优先使用结构体
+
 - C语言中内存和指针的部分概念在OC中得到了传承，如“栈中存放指针，指向堆内的实例”，要注意OC中的指针是用来指示对象的。但OC存在新的内存管理结构：引用计数
+
+  
 
 # 2. 在类的头文件中尽量少引用其他头文件
 
-- 在.h中使用@class(向前声明)尽量延后引入（#import）头文件的时机，可减少编译时间
+- 在 .h 中使用 @class (向前声明)，以尽量延后引入 `#import` 头文件的时机，可减少编译时间
+
 - @class也可以解决两个类相互引用导致无法编译的问题，使用#import而非#include虽然不会导致死循环，但是却意味着两个类中有一个无法被正确编译
+
 - 无法使用类的前置声明（如遵循协议），使用“class-continuation 分类”
+
+  
 
 # 3. 多用字面量语法
 
@@ -65,6 +85,8 @@
 
 - 字面量语法创建数组或字典时，务必确保值里不含nil，否则会抛出异常
 
+  
+
 # 4. 多用类型常量，少用#define预处理指令
 
 - 类型常量包含类型信息，编译器会进行类型检查，要优于预处理指令
@@ -87,21 +109,23 @@
   const NSTimeInterval ClassNameAmimationDuration = 1.0;
   ```
 
-  # 5. 对于选项配置多用枚举
+  
+
+# 5. 对于选项配置多用枚举
 
   - 定义枚举变量
 
-    ```objectivec
-    enum EOCConnectionState {
-        EOCConnectionStateDisconnected,
-        EOCConnectionStateConnecting,
-        EOCConnectionStateConnected,
-    };
-    
-    typedef enum EOCConnectionState EOCConnectionState;
-    EOCConnectionState state = EOCConnectionStateDisconnected;
-    ```
+  ```objectivec
+  enum EOCConnectionState {
+      EOCConnectionStateDisconnected,
+      EOCConnectionStateConnecting,
+      EOCConnectionStateConnected,
+  };
   
+  typedef enum EOCConnectionState EOCConnectionState;
+  EOCConnectionState state = EOCConnectionStateDisconnected;
+  ```
+
   - 指定使用何种底层数据类型
   
     ```objective-c
@@ -128,8 +152,6 @@
         //UIViewAutoreasizingFlexibleWidth is set.
     }
     ```
-  
-    
   
   - Foundation框架中定义了若干辅助宏，具备向后兼容能力，适配新旧平台的编译器标准。`NS_ENUM`用于单选，`NS_OPTIONS`用于多选。
   
