@@ -100,7 +100,7 @@
 
 - 如果局限于编译单元之内，则在变量前加k（kAmimationDuration）；如果在类之外可见，以类名为前缀（ClassNameAmimationDuration）
 
-- 对类之外要暴露,用extern申明为全局变量
+- 对类之外要暴露，用extern申明为全局变量
 
   ```objectivec
   //.h
